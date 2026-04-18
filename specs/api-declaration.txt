@@ -1,0 +1,64 @@
+
+phase 1 - specify
+The project consists of creating a Java backend capable of interacting with third-party services and exposing
+a rest API which would be consumed by other platforms such as Android, iOS, WebServers and even other
+backend applications
+The api rest api will return music groups/artist information that should be retrieved by http request, via webflux, from https://bands-api.vercel.app/api/bands.
+the resource will be provided by the given website as a json list, with all jsons having the same format as the following
+{
+    "name": "Nickelback",
+    "image": "https://lastfm.freetls.fastly.net/i/u/300x300/2a96cbd8b46e442fc41c2b86b821562f.png",
+    "genre": "rock",
+    "biography": "Nickelback is a rock band which formed in Hanna, Alberta, Canada in 1995. Nickelback is one of the most commercially successful Canadian groups, having sold 30 million records worldwide. Nickelback ranks as the 11th best selling music act of the 2000s, and places as the 2nd best selling foreign act in the US behind The Beatles for the 2000s.\n\nThe band consists of Chad Kroeger (vocals, guitar), Ryan Peake (guitar, vocals), Mike Kroeger (bass) and Daniel Adair (drums). \u003Ca href=\"https://www.last.fm/music/Nickelback\"\u003ERead more on Last.fm\u003C/a\u003E",
+    "numPlays": 17605491,
+    "id": "bc710bcf-8815-42cf-bad2-3f1d12246aeb",
+    "albums": [
+      "3c5794a0-d913-390d-ab24-6762af38c112",
+      "9599042a-34a9-39f2-a52d-c903a382515c",
+      "b3fad414-9b92-4d04-b703-9605d5d33bac"
+    ]
+  }
+
+phase 2 - plan
+the implementation must respect the hexagonal structure in the project. 
+you should use webflux to external api calls. All these calls must be made in the infrastructure layer
+you should use structmapper to map the objects accross the layers. NEVER REUSE AN OBJECT IN A LAYER ON ANOTHER
+all methods and classes must have javadocs in english.
+all endpoints in the created rest api must be fully documented using openapi swagger
+
+phase 3 - taks
+1 - In the infrastructure layer, you must implement a client
+(BandsAPiClient) that will retrieve the json list using a dto named
+ArtistResponse (also created at the infrastrucure layer)
+1.2 the BandsAPiClient must be called by the ArtistInfosAdapter
+(infrastructure layer) that must implement ArtistInfosRepository (domain layer)
+1.3 create a ArtistInfosService, in the domain layer, that calls the 
+ArtistInfosRepository
+1.4 create a ArtistInfosController (v1/artists), with the follwing endpoints
+get - returns all artists, paginating the response (all pagination rules must
+be implemented in the ArtistInfosService; the pagination should default to
+10. The endpoint must have a sortAsc flag, that shoud define how the respose
+should sorted by the  NAME; the response should be done in the ArtistListResponse
+that should only the return the name and the numPlays of the artist
+get (/name?name) - returns the bands filtering by name. The filter by name must
+be applied at the domain layer. Remember to also sort the response using the
+sortAsk as well; the response should be done in the ArtistListResponse
+that should only the return the name and the numPlays of the artist;
+if none artist are found, throw the ArtistNotFoundException
+get (/{id}) should return all the infos of a given artist. You must use the ArtistReponse dto
+if none artist are found, throw the ArtistNotFoundException
+1.5 create an exception handler and treat the ArtistNotFoundException exception
+1.6 create WebMvcTest using for the endpoints to check the reponse structure
+and to test the ArtistNotFoundException handling
+1.7 create tests for the ArtistInfoService using mockito do verify the filters
+are applied correctly. Also test the scenarios which the ArtistNotFoundException
+is thrown.
+1.8 create integration tests at the bootstrap layer the tests the whole process
+use wiremock to mock the external call made to the bands-api third party service
+
+4 - implement the given tests. The task must be considered finished when all 
+created tests pass
+
+
+
+
